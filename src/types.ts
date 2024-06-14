@@ -2,19 +2,25 @@ import { ActionConfig, LovelaceCard, LovelaceCardConfig, LovelaceCardEditor } fr
 
 declare global {
   interface HTMLElementTagNameMap {
-    'boilerplate-card-editor': LovelaceCardEditor;
+    'lg-washer-dryer-card-editor': LovelaceCardEditor;
     'hui-error-card': LovelaceCard;
   }
 }
 
-// TODO Add your configuration elements here for type-checking
-export interface BoilerplateCardConfig extends LovelaceCardConfig {
+export type LGWasherDryerImage = {
+  key: string;
+  name: string;
+  image: string;
+};
+
+export interface LGWasherDryerCardConfig extends LovelaceCardConfig {
   type: string;
   name?: string;
   show_warning?: boolean;
   show_error?: boolean;
   test_gui?: boolean;
-  entity?: string;
+  device?: string;
+  image?: LGWasherDryerImage;
   tap_action?: ActionConfig;
   hold_action?: ActionConfig;
   double_tap_action?: ActionConfig;

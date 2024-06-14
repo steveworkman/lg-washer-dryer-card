@@ -3,11 +3,7 @@
     "target": "es2017",
     "module": "esnext",
     "moduleResolution": "node",
-    "lib": [
-      "es2017",
-      "dom",
-      "dom.iterable"
-    ],
+    "lib": ["es2017", "dom", "dom.iterable"],
     "noEmit": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
@@ -17,5 +13,6 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "experimentalDecorators": true
-  }
+  },
+  "include": ["src/**/*.ts", "helpers.d.ts"]
 }

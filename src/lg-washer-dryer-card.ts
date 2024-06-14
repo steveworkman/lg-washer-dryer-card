@@ -11,14 +11,18 @@ import {
   getLovelace,
 } from 'custom-card-helpers'; // This is a community maintained npm module with common helper functions/types. https://github.com/custom-cards/custom-card-helpers
 
-import type { BoilerplateCardConfig } from './types';
+import type { LGWasherDryerCardConfig } from './types';
 import { actionHandler } from './action-handler-directive';
 import { CARD_VERSION } from './const';
 import { localize } from './localize/localize';
 
+// Images
+import comboCard from './assets/hass-combo-card-bg.png';
+import { HassEntity } from 'home-assistant-js-websocket';
+
 /* eslint no-console: 0 */
 console.info(
-  `%c  BOILERPLATE-CARD \n%c  ${localize('common.version')} ${CARD_VERSION}    `,
+  `%c  lg-washer-dryer-card \n%c  ${localize('common.version')} ${CARD_VERSION}    `,
   'color: orange; font-weight: bold; background: black',
   'color: white; font-weight: bold; background: dimgray',
 );
@@ -26,17 +30,16 @@ console.info(
 // This puts your card into the UI card picker dialog
 (window as any).customCards = (window as any).customCards || [];
 (window as any).customCards.push({
-  type: 'boilerplate-card',
-  name: 'Boilerplate Card',
-  description: 'A template custom card for you to create something awesome',
+  type: 'lg-washer-dryer-card',
+  name: 'LG Washer Dryer Card',
+  description: 'For users who want cards that look like their LG ThinQ enabled machines physical displays',
 });
 
-// TODO Name your custom element
-@customElement('boilerplate-card')
-export class BoilerplateCard extends LitElement {
+@customElement('lg-washer-dryer-card')
+export class LGWasherDryerCard extends LitElement {
   public static async getConfigElement(): Promise<LovelaceCardEditor> {
     await import('./editor');
-    return document.createElement('boilerplate-card-editor');
+    return document.createElement('lg-washer-dryer-card-editor');
   }
 
   public static getStubConfig(): Record<string, unknown> {
@@ -47,10 +50,10 @@ export class BoilerplateCard extends LitElement {
   // https://lit.dev/docs/components/properties/
   @property({ attribute: false }) public hass!: HomeAssistant;
 
-  @state() private config!: BoilerplateCardConfig;
+  @state() private config!: LGWasherDryerCardConfig;
 
   // https://lit.dev/docs/components/properties/#accessors-custom
-  public setConfig(config: BoilerplateCardConfig): void {
+  public setConfig(config: LGWasherDryerCardConfig): void {
     // TODO Check for required fields and that they are of the proper format
     if (!config) {
       throw new Error(localize('common.invalid_configuration'));
@@ -61,9 +64,16 @@ export class BoilerplateCard extends LitElement {
     }
 
     this.config = {
-      name: 'Boilerplate',
+      name: 'LG Washer Dryer',
       ...config,
     };
+  }
+
+  get device(): HassEntity | undefined {
+    if (this.config.device) {
+      return this.hass.states[this.config.device];
+    }
+    return;
   }
 
   // https://lit.dev/docs/components/lifecycle/#reactive-update-cycle-performing
@@ -77,14 +87,13 @@ export class BoilerplateCard extends LitElement {
 
   // https://lit.dev/docs/components/rendering/
   protected render(): TemplateResult | void {
-    // TODO Check for stateObj or other necessary things and render a warning if missing
-    if (this.config.show_warning) {
-      return this._showWarning(localize('common.show_warning'));
-    }
+    // if (this.config.show_warning) {
+    //   return this._showWarning(localize('common.show_warning'));
+    // }
 
-    if (this.config.show_error) {
-      return this._showError(localize('common.show_error'));
-    }
+    // if (this.config.show_error) {
+    //   return this._showError(localize('common.show_error'));
+    // }
 
     return html`
       <ha-card
@@ -95,8 +104,13 @@ export class BoilerplateCard extends LitElement {
           hasDoubleClick: hasAction(this.config.double_tap_action),
         })}
         tabindex="0"
-        .label=${`Boilerplate: ${this.config.entity || 'No Entity Defined'}`}
-      ></ha-card>
+      >
+        <dl>
+          <dt>Something</dt>
+          <dd>${this.device ? this.device.attributes?.friendly_name : 'Undefined'}</dd>
+        </dl>
+        <img src="${this.config.image?.image}" />
+      </ha-card>
     `;
   }
 

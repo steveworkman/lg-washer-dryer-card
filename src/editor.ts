@@ -3,18 +3,19 @@ import { LitElement, html, TemplateResult, css, CSSResultGroup } from 'lit';
 import { HomeAssistant, fireEvent, LovelaceCardEditor } from 'custom-card-helpers';
 
 import { ScopedRegistryHost } from '@lit-labs/scoped-registry-mixin';
-import { BoilerplateCardConfig } from './types';
+import type { LGWasherDryerCardConfig, LGWasherDryerImage } from './types';
 import { customElement, property, state } from 'lit/decorators';
 import { formfieldDefinition } from '../elements/formfield';
 import { selectDefinition } from '../elements/select';
 import { switchDefinition } from '../elements/switch';
 import { textfieldDefinition } from '../elements/textfield';
+import { hardwareImages } from './hardware';
 
-@customElement('boilerplate-card-editor')
-export class BoilerplateCardEditor extends ScopedRegistryHost(LitElement) implements LovelaceCardEditor {
+@customElement('lg-washer-dryer-card-editor')
+export class LGWasherDryerCardEditor extends ScopedRegistryHost(LitElement) implements LovelaceCardEditor {
   @property({ attribute: false }) public hass?: HomeAssistant;
 
-  @state() private _config?: BoilerplateCardConfig;
+  @state() private _config?: LGWasherDryerCardConfig;
 
   @state() private _helpers?: any;
 
@@ -27,7 +28,7 @@ export class BoilerplateCardEditor extends ScopedRegistryHost(LitElement) implem
     ...formfieldDefinition,
   };
 
-  public setConfig(config: BoilerplateCardConfig): void {
+  public setConfig(config: LGWasherDryerCardConfig): void {
     this._config = config;
 
     this.loadCardHelpers();
@@ -45,8 +46,12 @@ export class BoilerplateCardEditor extends ScopedRegistryHost(LitElement) implem
     return this._config?.name || '';
   }
 
-  get _entity(): string {
-    return this._config?.entity || '';
+  get _device(): string {
+    return this._config?.device || '';
+  }
+
+  get _image(): LGWasherDryerImage | undefined {
+    return this._config?.image;
   }
 
   get _show_warning(): boolean {
@@ -62,21 +67,23 @@ export class BoilerplateCardEditor extends ScopedRegistryHost(LitElement) implem
       return html``;
     }
 
-    // You can restrict on domain type
-    const entities = Object.keys(this.hass.states);
+    // All entities are filtered to be just top-level sensors
+    const devices = Object.keys(this.hass.states).filter(
+      (device) => device.startsWith('sensor') && !device.includes('_'),
+    );
 
     return html`
       <mwc-select
         naturalMenuWidth
         fixedMenuPosition
-        label="Entity (Required)"
-        .configValue=${'entity'}
-        .value=${this._entity}
+        label="Device (Required)"
+        .configValue=${'device'}
+        .value=${this._device}
         @selected=${this._valueChanged}
         @closed=${(ev) => ev.stopPropagation()}
       >
-        ${entities.map((entity) => {
-          return html`<mwc-list-item .value=${entity}>${entity}</mwc-list-item>`;
+        ${devices.map((device) => {
+          return html`<mwc-list-item .value=${device}>${device}</mwc-list-item>`;
         })}
       </mwc-select>
       <mwc-textfield
@@ -85,20 +92,19 @@ export class BoilerplateCardEditor extends ScopedRegistryHost(LitElement) implem
         .configValue=${'name'}
         @input=${this._valueChanged}
       ></mwc-textfield>
-      <mwc-formfield .label=${`Toggle warning ${this._show_warning ? 'off' : 'on'}`}>
-        <mwc-switch
-          .checked=${this._show_warning !== false}
-          .configValue=${'show_warning'}
-          @change=${this._valueChanged}
-        ></mwc-switch>
-      </mwc-formfield>
-      <mwc-formfield .label=${`Toggle error ${this._show_error ? 'off' : 'on'}`}>
-        <mwc-switch
-          .checked=${this._show_error !== false}
-          .configValue=${'show_error'}
-          @change=${this._valueChanged}
-        ></mwc-switch>
-      </mwc-formfield>
+      <mwc-select
+        naturalMenuWidth
+        fixedMenuPosition
+        label="Image (Required)"
+        .configValue=${'image'}
+        .value=${this._image}
+        @selected=${this._valueChanged}
+        @closed=${(ev) => ev.stopPropagation()}
+      >
+        ${hardwareImages.map((image) => {
+          return html`<mwc-list-item .value=${image}>${image.name}</mwc-list-item>`;
+        })}
+      </mwc-select>
     `;
   }
 

@@ -1,18 +1,22 @@
 {
-  "name": "boilerplate-card",
-  "version": "1.4.1",
-  "description": "Lovelace boilerplate-card",
+  "name": "lg-washer-dryer-card",
+  "version": "0.1.0",
+  "description": "Lovelace card for LG washer dryer",
   "keywords": [
     "home-assistant",
     "homeassistant",
     "hass",
     "automation",
     "lovelace",
-    "custom-cards"
+    "custom-cards",
+    "lg"
   ],
-  "module": "boilerplate-card.js",
-  "repository": "git@github.com:custom_cards/boilerplate-card.git",
-  "author": "Ian Richardson <iantrich@gmail.com>",
+  "engines": {
+    "node": "^16.0.0"
+  },
+  "module": "lg-washer-dryer-card.js",
+  "repository": "git@github.com:steveworkman/lg-washer-dryer-card.git",
+  "author": "Steve Workman <steve.workman@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "@lit-labs/scoped-registry-mixin": "^1.0.0",
@@ -32,6 +36,7 @@
     "@babel/core": "^7.15.0",
     "@babel/plugin-proposal-class-properties": "^7.14.5",
     "@babel/plugin-proposal-decorators": "^7.14.5",
+    "@rollup/plugin-image": "^3.0.3",
     "@rollup/plugin-json": "^4.1.0",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
