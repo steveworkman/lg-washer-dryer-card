@@ -6,6 +6,7 @@ import { terser } from 'rollup-plugin-terser';
 import json from '@rollup/plugin-json';
 import ignore from './rollup-plugins/ignore';
 import image from '@rollup/plugin-image';
+import url from '@rollup/plugin-url';
 import { ignoreTextfieldFiles } from './elements/ignore/textfield';
 import { ignoreSelectFiles } from './elements/ignore/select';
 import { ignoreSwitchFiles } from './elements/ignore/switch';
@@ -19,6 +20,13 @@ export default {
   plugins: [
     resolve(),
     image(),
+    url({
+      // by default, rollup-plugin-url will not handle font files
+      include: ['**/*.woff', '**/*.woff2'],
+      // setting infinite limit will ensure that the files
+      // are always bundled with the code, not copied to /dist
+      limit: Infinity,
+    }),
     typescript(),
     json(),
     babel({

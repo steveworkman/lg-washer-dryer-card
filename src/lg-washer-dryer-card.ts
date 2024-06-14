@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { LitElement, html, TemplateResult, css, PropertyValues, CSSResultGroup } from 'lit';
+import { LitElement, html, TemplateResult, css, unsafeCSS, PropertyValues, CSSResultGroup } from 'lit';
 import { customElement, property, state } from 'lit/decorators';
 import {
   HomeAssistant,
@@ -11,14 +11,14 @@ import {
   getLovelace,
 } from 'custom-card-helpers'; // This is a community maintained npm module with common helper functions/types. https://github.com/custom-cards/custom-card-helpers
 
+import type { HassEntity } from 'home-assistant-js-websocket';
 import type { LGWasherDryerCardConfig } from './types';
 import { actionHandler } from './action-handler-directive';
 import { CARD_VERSION } from './const';
 import { localize } from './localize/localize';
 
-// Images
-import comboCard from './assets/hass-combo-card-bg.png';
-import { HassEntity } from 'home-assistant-js-websocket';
+// CSS
+import sevenSegment from './assets/7segment.woff';
 
 /* eslint no-console: 0 */
 console.info(
@@ -137,6 +137,14 @@ export class LGWasherDryerCard extends LitElement {
 
   // https://lit.dev/docs/components/styles/
   static get styles(): CSSResultGroup {
-    return css``;
+    return css`
+      @font-face {
+        font-family: segment7;
+        src: url('${unsafeCSS(sevenSegment)}') format('woff');
+      }
+      /* dl {
+        font-family: segment7;
+      } */
+    `;
   }
 }

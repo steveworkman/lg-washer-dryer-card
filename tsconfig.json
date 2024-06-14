@@ -14,5 +14,5 @@
     "resolveJsonModule": true,
     "experimentalDecorators": true
   },
-  "include": ["src/**/*.ts", "helpers.d.ts"]
+  "include": ["src/**/*.ts", "src/helpers.d.ts"]
 }
