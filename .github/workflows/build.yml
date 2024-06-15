@@ -3,10 +3,10 @@ name: 'Build'
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
-      - master
+      - main
 
 jobs:
   build:
@@ -14,6 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: 'actions/setup-node@v4'
+        with:
+          node-version: '20'
       - name: Build
         run: |
           npm install

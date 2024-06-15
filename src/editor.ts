@@ -4,11 +4,11 @@ import { HomeAssistant, fireEvent, LovelaceCardEditor } from 'custom-card-helper
 
 import { ScopedRegistryHost } from '@lit-labs/scoped-registry-mixin';
 import type { LGWasherDryerCardConfig, LGWasherDryerImage } from './types';
-import { customElement, property, state } from 'lit/decorators';
-import { formfieldDefinition } from '../elements/formfield';
-import { selectDefinition } from '../elements/select';
-import { switchDefinition } from '../elements/switch';
-import { textfieldDefinition } from '../elements/textfield';
+import { customElement, property, state } from 'lit/decorators.js';
+import { formfieldDefinition } from '../elements/formfield.js';
+import { selectDefinition } from '../elements/select.js';
+import { switchDefinition } from '../elements/switch.js';
+import { textfieldDefinition } from '../elements/textfield.js';
 import { hardwareImages } from './hardware';
 
 @customElement('lg-washer-dryer-card-editor')
