@@ -56,4 +56,13 @@ export default [
     },
     plugins: [...plugins],
   },
+  {
+    input: 'src/lg-washer-dryer-card.ts',
+    output: {
+      dir: 'dist',
+      format: 'cjs',
+      entryFileNames: '[name].es5.js',
+    },
+    plugins: [...plugins],
+  },
 ];

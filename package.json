@@ -14,6 +14,7 @@
   "engines": {
     "node": ">=16.0.0"
   },
+  "main": "lg-washer-dryer-card.es5.js",
   "module": "lg-washer-dryer-card.js",
   "repository": "git@github.com:steveworkman/lg-washer-dryer-card.git",
   "author": "Steve Workman <steve.workman@gmail.com>",
