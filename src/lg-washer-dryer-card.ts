@@ -19,6 +19,10 @@ import { localize } from './localize/localize';
 
 // CSS
 import sevenSegment from './assets/7segment.woff';
+const FONT_FACES = `@font-face {
+  font-family: segment7;
+  src: url('${unsafeCSS(sevenSegment)}') format('woff');
+}`;
 
 /* eslint no-console: 0 */
 console.info(
@@ -37,6 +41,11 @@ console.info(
 
 @customElement('lg-washer-dryer-card')
 export class LGWasherDryerCard extends LitElement {
+  constructor() {
+    super();
+    this.setupFontFaces();
+  }
+
   public static async getConfigElement(): Promise<LovelaceCardEditor> {
     await import('./editor');
     return document.createElement('lg-washer-dryer-card-editor');
@@ -76,6 +85,17 @@ export class LGWasherDryerCard extends LitElement {
     return;
   }
 
+  setupFontFaces() {
+    if (document.querySelector('style[data-description="lg-washer-card-font-faces"]')) {
+      return;
+    }
+    const style = document.createElement('style');
+    style.dataset.description = 'lg-washer-card-font-faces';
+
+    style.appendChild(document.createTextNode(FONT_FACES));
+    document.head.appendChild(style);
+  }
+
   // https://lit.dev/docs/components/lifecycle/#reactive-update-cycle-performing
   protected shouldUpdate(changedProps: PropertyValues): boolean {
     if (!this.config) {
@@ -87,17 +107,16 @@ export class LGWasherDryerCard extends LitElement {
 
   // https://lit.dev/docs/components/rendering/
   protected render(): TemplateResult | void {
-    // if (this.config.show_warning) {
-    //   return this._showWarning(localize('common.show_warning'));
-    // }
+    if (this.config.show_warning) {
+      return this._showWarning(localize('common.show_warning'));
+    }
 
-    // if (this.config.show_error) {
-    //   return this._showError(localize('common.show_error'));
-    // }
+    if (this.config.show_error) {
+      return this._showError(localize('common.show_error'));
+    }
 
     return html`
       <ha-card
-        .header=${this.config.name}
         @action=${this._handleAction}
         .actionHandler=${actionHandler({
           hasHold: hasAction(this.config.hold_action),
@@ -105,11 +124,27 @@ export class LGWasherDryerCard extends LitElement {
         })}
         tabindex="0"
       >
-        <dl>
-          <dt>Something</dt>
-          <dd>${this.device ? this.device.attributes?.friendly_name : 'Undefined'}</dd>
-        </dl>
-        <img src="${this.config.image?.image}" />
+        <header>
+          <span class="time time_display">00:11:00${this.device?.attributes.washer_time_display}</span>
+        </header>
+        <article>
+          <hui-generic-entity-row
+            .hass=${this.hass}
+            .config=${{ entity: 'sensor.washer_current_course' }}
+          ></hui-generic-entity-row>
+          <hui-generic-entity-row
+            .hass=${this.hass}
+            .config=${{ entity: 'sensor.washer_run_state' }}
+          ></hui-generic-entity-row>
+          <hui-generic-entity-row
+            .hass=${this.hass}
+            .config=${{ entity: 'sensor.washer_door_lock' }}
+          ></hui-generic-entity-row>
+          <hui-generic-entity-row
+            .hass=${this.hass}
+            .config=${{ entity: 'sensor.washer_water_temp' }}
+          ></hui-generic-entity-row>
+        </article>
       </ha-card>
     `;
   }
@@ -138,13 +173,27 @@ export class LGWasherDryerCard extends LitElement {
   // https://lit.dev/docs/components/styles/
   static get styles(): CSSResultGroup {
     return css`
-      @font-face {
+      .time {
         font-family: segment7;
-        src: url('${unsafeCSS(sevenSegment)}') format('woff');
+        font-size: 3em;
+        justify-self: end;
       }
-      /* dl {
-        font-family: segment7;
-      } */
+      .time_display {
+        grid-area: time_display;
+      }
+      header {
+        background-color: #1a1a1a;
+        height: 80px;
+        border-radius: 5px;
+        color: #fff;
+        padding: 8px;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        grid-template-rows: 1fr 1fr;
+        grid-template-areas:
+          '. . . . .'
+          '. . . time_display time_display';
+      }
     `;
   }
 }
